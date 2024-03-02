@@ -2,6 +2,6 @@
 
 RSpec.describe Lospec do
   it "has a version number" do
-    expect(Lospec::VERSION).not_to be nil
+    expect(described_class::VERSION).not_to be_nil
   end
 end
