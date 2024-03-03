@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-require_relative "lospec/version"
-
 module Lospec
   class Error < StandardError; end
-  # Your code goes here...
 end
+
+require_relative "lospec/version"
+require_relative "lospec/palette"
+require_relative "lospec/palette/search"
