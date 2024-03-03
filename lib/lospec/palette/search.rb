@@ -35,9 +35,9 @@ module Lospec
       def results_for_page(page:)
         url = url(page:)
 
-        json = URI.open(url).read
+        json = URI.open(url.to_s).read # : String
 
-        data = JSON.parse json
+        data = JSON.parse(json)
 
         data["palettes"].map(&method(:parse))
       end
@@ -56,7 +56,7 @@ module Lospec
 
         query = URI.encode_www_form params
 
-        URI::HTTPS.build host:, path:, query:
+        URI::HTTPS.build(host:, path:, query:)
       end
 
       def colors_params # rubocop:disable Metrics

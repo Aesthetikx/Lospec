@@ -3,4 +3,62 @@ module Lospec
 
   class Error < StandardError
   end
+
+  class PaletteNotFound < Error
+    def initialize: (String) -> void
+  end
+
+  class Palette
+    attr_reader id: String
+    attr_reader slug: String
+    attr_reader title: String
+    attr_reader description: String
+    attr_reader colors: Array[String]
+    attr_reader tags: Array[String]
+    attr_reader hashtag: String?
+    attr_reader published_at: Time
+    attr_reader created_at: Time
+    attr_reader downloads: Integer
+    attr_reader likes: Integer
+    attr_reader comments: Integer
+
+    def initialize: (
+      id: String,
+      slug: String,
+      title: String,
+      description: String,
+      colors: Array[String],
+      tags: Array[String],
+      hashtag: String?,
+      published_at: Time,
+      created_at: Time,
+      downloads: Integer,
+      likes: Integer,
+      comments: Integer,
+    ) -> void
+
+    class Search
+      SORT_TYPES: Array[Symbol]
+
+      attr_reader colors: (Numeric | Range[Numeric])?
+      attr_reader tag: String?
+      attr_reader sort: String | Symbol
+
+      def initialize: (
+        ?colors: Numeric | Range[Numeric],
+        ?tag: String,
+        ?sort: String | Symbol
+      ) -> void
+
+      def results: () -> Enumerator::Lazy[Palette, void]
+
+      private
+
+      def url: (page: Numeric) -> URI::HTTP
+
+      def colors_params: () -> Hash[Symbol, (String | Numeric)]
+
+      def results_for_page: (page: Numeric) -> Array[Palette]
+    end
+  end
 end
