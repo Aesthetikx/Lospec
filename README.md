@@ -1,24 +1,56 @@
 # Lospec
 
-TODO: Delete this and the text below, and describe your gem
-
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/lospec`. To experiment with that code, run `bin/console` for an interactive prompt.
+This gem is a simple interface to the color palettes available on lospec.com.
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
-
 Install the gem and add to the application's Gemfile by executing:
 
-    $ bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+    $ bundle add lospec
 
 If bundler is not being used to manage dependencies, install the gem by executing:
 
-    $ gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+    $ gem install lospec
 
 ## Usage
 
-TODO: Write usage instructions here
+Use `Lospec::Palette.search` to search for palettes. For example, to find a palette with four colors:
+```ruby
+palette = Lospec::Palette.search(colors: 4).first
+
+palette.slug   # => "tropical-fruit-04"
+palette.colors # => ["f5b413", "9c1904", "dd0956", "250442"]
+```
+
+You can also sort by most downloads first, and specify an endless range for colors. The available sort options are `:default`, `:alphabetical`, `:downloads`, and `:newest`.
+```ruby
+palette = Lospec::Palette.search(colors: ..3, tag: 'black', sort: :downloads).first
+
+palette.title  # => "1bit Monitor Glow"
+palette.colors # => ["222323", "f0f6f0"]
+```
+
+The search method returns a lazy enumerable, so you can filter and limit. For example, to find up to three popular palettes with four or more colors containing pure white:
+```ruby
+palettes = Lospec::Palette
+  .search(colors: 4.., sort: :downloads)
+  .filter { |palette| palette.colors.include?("ffffff") }
+  .take(3)
+  .to_a
+
+palettes.map(&:slug) # => ["2-bit-grayscale", "arq4", "cga-palette-1-high"]
+```
+
+If you know the slug of a specific palette, you can fetch it directly:
+```ruby
+palette = Lospec::Palette.fetch("nintendo-gameboy-bgb")
+
+palette.description # => "The default palette used by the bgb emulator..."
+```
+
+## Considerations
+
+Lospec does provide an API, by which you can fetch the name and colors of a palette by slug. It does not provide a formal API to obtain the additional details of the palette, nor an API to search for palettes. Therefore, this gem is an interface that wraps network calls made by the lospec.com frontend. To mitigate needless network calls, this library employs request caching and lazy collections. However, do be aware that the methods in this gem do make network requests to lospec.com, so care should be used to limit excessive usage. Read more [here](https://lospec.com/palettes/api).
 
 ## Development
 
@@ -28,7 +60,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/lospec.
+Bug reports and pull requests are welcome on GitHub at https://github.com/Aesthetikx/lospec.
 
 ## License
 
