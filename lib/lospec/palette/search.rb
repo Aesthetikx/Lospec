@@ -35,7 +35,7 @@ module Lospec
       def results_for_page(page:)
         url = url(page:)
 
-        json = URI.open(url.to_s).read # : String
+        json = url.open.read
 
         data = JSON.parse(json)
 
